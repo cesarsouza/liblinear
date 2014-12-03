@@ -23,8 +23,8 @@ int col_format_flag;
 
 void read_sparse_instance(const mxArray *prhs, int index, struct feature_node *x, int feature_number, double bias)
 {
-	int i, j, low, high;
-	mwIndex *ir, *jc;
+	int j;
+	mwIndex *ir, *jc, low, high, i;
 	double *samples;
 
 	ir = mxGetIr(prhs);
@@ -33,7 +33,7 @@ void read_sparse_instance(const mxArray *prhs, int index, struct feature_node *x
 
 	// each column is one instance
 	j = 0;
-	low = (int) jc[index], high = (int) jc[index+1];
+	low = jc[index], high = jc[index+1];
 	for(i=low; i<high && (int) (ir[i])<feature_number; i++)
 	{
 		x[j].index = (int) ir[i]+1;
@@ -176,9 +176,7 @@ void do_predict(int nlhs, mxArray *plhs[], const mxArray *prhs[], struct model *
 		++total;
 	}
 
-	if(model_->param.solver_type==L2R_L2LOSS_SVR ||
-	   model_->param.solver_type==L2R_L1LOSS_SVR_DUAL ||
-	   model_->param.solver_type==L2R_L2LOSS_SVR_DUAL)
+	if(check_regression_model(model_))
 	{
 		info("Mean squared error = %g (regression)\n",error/total);
 		info("Squared correlation coefficient = %g (regression)\n",

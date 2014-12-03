@@ -123,7 +123,7 @@ options:
 	-s 1, 3, 4 and 7
 		Dual maximal violation <= eps; similar to libsvm (default 0.1)
 	-s 5 and 6
-		|f'(w)|_inf <= eps*min(pos,neg)/l*|f'(w0)|_inf,
+		|f'(w)|_1 <= eps*min(pos,neg)/l*|f'(w0)|_1,
 		where f is the primal function (default 0.01)
 	-s 12 and 13\n"
 		|f'(alpha)|_1 <= eps |f'(alpha0)|,
@@ -448,6 +448,24 @@ Library Usage
     This function outputs the name of labels into an array called label.
     For a regression model, label is unchanged.
 
+- Function: double get_decfun_coef(const struct model *model_, int feat_idx,
+            int label_idx);
+
+    This function gives the coefficient for the feature with feature index =
+    feat_idx and the class with label index = label_idx. Note that feat_idx
+    starts from 1, while label_idx starts from 0. If feat_idx is not in the
+    valid range (1 to nr_feature), then a zero value will be returned. For
+    classification models, if label_idx is not in the valid range (0 to
+    nr_class-1), then a zero value will be returned; for regression models,
+    label_idx is ignored.
+
+- Function: double get_decfun_bias(const struct model *model_, int label_idx);
+
+    This function gives the bias term corresponding to the class with the
+    label_idx. For classification models, if label_idx is not in a valid range
+    (0 to nr_class-1), then a zero value will be returned; for regression
+    models, label_idx is ignored.
+
 - Function: const char *check_parameter(const struct problem *prob,
             const struct parameter *param);
 
@@ -455,6 +473,16 @@ Library Usage
     range of the problem. This function should be called before calling
     train() and cross_validation(). It returns NULL if the
     parameters are feasible, otherwise an error message is returned.
+
+- Function: int check_probability_model(const struct model *model);
+
+    This function returns 1 if the model supports probability output;
+    otherwise, it returns 0.
+
+- Function: int check_regression_model(const struct model *model);
+
+    This function returns 1 if the model is a regression model; otherwise
+    it returns 0.
 
 - Function: int save_model(const char *model_file_name,
             const struct model *model_);
@@ -504,6 +532,9 @@ VC++ or where it is installed.
 
 nmake -f Makefile.win clean all
 
+2. (Optional) To build 64-bit windows binaries, you must
+	(1) Setup vcvars64.bat instead of vcvars32.bat
+	(2) Change CFLAGS in Makefile.win: /D _WIN32 to /D _WIN64
 
 MATLAB/OCTAVE Interface
 =======================
