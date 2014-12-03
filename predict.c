@@ -5,7 +5,7 @@
 #include <errno.h>
 #include "linear.h"
 
-int print_null(const char *s,...) {}
+int print_null(const char *s,...) {return 0;}
 
 static int (*info)(const char *fmt,...) = &printf;
 
@@ -167,7 +167,7 @@ void do_predict(FILE *input, FILE *output)
 			((total*sumpt-sump*sumt)*(total*sumpt-sump*sumt))/
 			((total*sumpp-sump*sump)*(total*sumtt-sumt*sumt))
 			);
-        }
+	}
 	else
 		info("Accuracy = %g%% (%d/%d)\n",(double) correct/total*100,correct,total);
 	if(flag_predict_probability)
